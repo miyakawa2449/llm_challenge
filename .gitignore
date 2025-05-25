@@ -1,0 +1,63 @@
+# Python #
+############
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*build*/
+dist/
+*.egg-info/
+*.egg
+
+# Virtual Environments #
+######################
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook #
+####################
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+# profiled_results/ # 場合によっては結果を無視したい場合
+
+# IDE / Editor specific #
+#########################
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sublime-workspace
+
+# OS specific #
+###############
+.DS_Store
+Thumbs.db
+
+# Data & Models #
+#################
+# 大規模なデータセットや学習済みモデルはGit LFSを使うか、
+# ここに記述してリポジトリに含めないようにします。
+# 例:
+# data/large_dataset.csv
+# models/my_large_model.pth
+# output/
+
+# Logs #
+########
+*.log
+logs/
+log/
+
+# Temporary files #
+###################
+tmp/
+temp/
+*.tmp
+*.temp

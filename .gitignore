@@ -48,6 +48,8 @@ Thumbs.db
 # data/large_dataset.csv
 # models/my_large_model.pth
 # output/
+downloaded_data.csv
+output.jsonl
 
 # Logs #
 ########

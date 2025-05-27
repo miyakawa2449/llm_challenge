@@ -1,0 +1,13 @@
+# 基本的なライブラリ
+openai
+
+# PyTorch (すでにcondaでインストール済みのため、ここではコメントアウトまたは記載しなくても良い)
+# torch
+# torchvision
+# torchaudio
+
+# その他、今後必要に応じて追加
+# 例:
+python-dotenv # .envファイルから環境変数を読み込む場合
+# pandas      # データ操作に使う場合
+# scikit-learn # 機械学習関連のユーティリティを使う場合

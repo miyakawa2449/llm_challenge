@@ -1,34 +1,31 @@
-from src.core.adapters.openai_adapter import OpenAIAdapter
-from src.prompts.prompt_manager import PromptManager
-from src.config import settings # settings.py から設定をインポート
-from typing import Dict, Any
+from src.core.openai_adapter import OpenAIAdapter
+from src.prompts.prompt_manager import PromptManager # 実際のPromptManagerを使用
 
 class ArticleGenerator:
     """
     映画レビュー記事の生成を行うクラス。
     LLMクライアントとプロンプトマネージャーを利用する。
     """
-    def __init__(self, llm_client: OpenAIAdapter = None, prompt_manager: PromptManager = None):
+    def __init__(self, client_adapter=None, prompt_manager=None):
         """
         ArticleGeneratorのコンストラクタ。
 
         Args:
-            llm_client (OpenAIAdapter, optional): 使用するLLMクライアント。
-                                                Noneの場合、デフォルトのOpenAIAdapterを初期化。
+            client_adapter (OpenAIAdapter, optional): OpenAIAdapterのインスタンス。
+                                                     Noneの場合、デフォルトのOpenAIAdapterを初期化。
             prompt_manager (PromptManager, optional): 使用するプロンプトマネージャー。
                                                      Noneの場合、デフォルトのPromptManagerを初期化。
         """
-        self.llm_client = llm_client if llm_client else OpenAIAdapter()
-        self.prompt_manager = prompt_manager if prompt_manager else PromptManager()
+        self.client = client_adapter or OpenAIAdapter()
+        self.prompter = prompt_manager or PromptManager() # 実際のPromptManagerを使用
 
     def generate_movie_review(
         self,
         movie_title: str,
-        user_blog_style_example: str,
-        tone_and_style_details: str = "親しみやすく、読者の興味を引くように。", # デフォルト値
-        other_notes: str = "特になし。", # デフォルト値
-        template_name: str = "movie_review_template.txt",
-        generation_params: Dict[str, Any] = None
+        user_blog_style_example: str = "",
+        tone_and_style_details: str = "",
+        other_notes: str = "",
+        generation_params: dict = None # main.py から渡される
     ) -> str:
         """
         指定された情報に基づいて映画レビュー記事を生成する。
@@ -38,41 +35,53 @@ class ArticleGenerator:
             user_blog_style_example (str): ユーザーのブログ文体の例。
             tone_and_style_details (str, optional): 記事のトーンやスタイルの詳細指示。
             other_notes (str, optional): その他特記事項。
-            template_name (str, optional): 使用するプロンプトテンプレート名。
-            generation_params (Dict[str, Any], optional): LLMに渡す生成パラメータ
-                                                        (temperature, max_tokensなど)。
-                                                        Noneの場合、settingsのデフォルト値が使用される。
+            generation_params (dict, optional): LLMに渡す生成パラメータ
+                                                (temperature, max_tokensなど)。
+                                                Noneの場合、settingsのデフォルト値が使用される。
 
         Returns:
             str: 生成された映画レビュー記事。エラー時は空文字列やエラーメッセージ。
         """
-        context = {
-            "movie_title": movie_title,
-            "user_blog_style_example": user_blog_style_example,
-            "tone_and_style_details": tone_and_style_details,
-            "other_notes": other_notes,
-        }
+        # PromptManagerを使用してプロンプトを構築
+        # この部分はPromptManagerの実装に依存します
+        # 例:
+        # prompt_data = {
+        #     "movie_title": movie_title,
+        #     "user_blog_style_example": user_blog_style_example,
+        #     "tone_and_style_details": tone_and_style_details,
+        #     "other_notes": other_notes,
+        # }
+        # system_prompt = self.prompter.get_system_prompt_for_movie_review()
+        # user_prompt = self.prompter.get_user_prompt_for_movie_review(prompt_data)
+        # messages = [
+        #     {"role": "system", "content": system_prompt},
+        #     {"role": "user", "content": user_prompt},
+        # ]
 
-        prompt = self.prompt_manager.build_prompt(template_name, context)
-        if not prompt:
-            return "エラー: プロンプトの構築に失敗しました。"
-
-        # LLMへのリクエストパラメータを設定
-        # generation_paramsが指定されていればそれを使用し、なければ空の辞書を渡す
-        # (OpenAIAdapter側でsettingsのデフォルト値が使われる)
-        params_to_use = generation_params if generation_params else {}
+        # --- 以下は仮のプロンプト作成ロジックです。実際のPromptManagerを使ってください ---
+        system_prompt_content = "あなたはプロの映画ブロガーです。依頼された映画の魅力的なレビュー記事を執筆してください。"
+        user_prompt_content = f"映画「{movie_title}」について、以下の点を考慮してレビュー記事を作成してください。\n"
+        if user_blog_style_example:
+            user_prompt_content += f"\n参考にする文体:\n{user_blog_style_example}\n"
+        if tone_and_style_details:
+            user_prompt_content += f"\nトーンとスタイル: {tone_and_style_details}\n"
+        if other_notes:
+            user_prompt_content += f"\nその他の指示: {other_notes}\n"
+        messages = [
+            {"role": "system", "content": system_prompt_content},
+            {"role": "user", "content": user_prompt_content.strip()}
+        ]
+        # --- 仮のプロンプト作成ロジックここまで ---
 
         try:
-            # print(f"--- Generating article with prompt ---") # デバッグ用
-            # print(prompt)
-            # print(f"--- Generation parameters ---")
-            # print(params_to_use)
-
-            generated_article = self.llm_client.generate_text(
-                prompt=prompt,
-                **params_to_use # temperature, max_tokensなどをキーワード引数として渡す
+            # OpenAIAdapter の generate_text メソッドに messages と generation_params を渡す
+            generated_text = self.client.generate_text(
+                messages=messages,
+                generation_params=generation_params # main.py から渡されたパラメータ
             )
-            return generated_article
+            return generated_text
         except Exception as e:
-            print(f"記事生成中にエラーが発生しました: {e}")
-            return f"エラー: 記事生成中に予期せぬ問題が発生しました ({e})"
+            # ArticleGeneratorレベルでのエラーハンドリング
+            error_message = f"エラー: 記事生成処理中に予期せぬ問題が発生しました ({e})"
+            print(error_message)
+            return error_message # main.py のエラー処理に合わせる

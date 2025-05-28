@@ -1,27 +1,18 @@
 import os
 from dotenv import load_dotenv
 
-# .envファイルから環境変数を読み込む
-# このsettings.pyファイルが src/config/ にあるため、
-# .envファイルは2階層上のプロジェクトルートにあることを想定
-current_dir = os.path.dirname(__file__)
-project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
-dotenv_path = os.path.join(project_root, '.env')
-
-# デバッグ用に実際のパスを表示
-# print(f"Attempting to load .env from: {dotenv_path}")
-
-load_dotenv(dotenv_path=dotenv_path)
+load_dotenv()
 
 # --- API Keys ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # --- Model Configuration ---
-# 初期はOpenAIのベースモデルを使用
+# ファインチューニング前のベースモデル (例)
 DEFAULT_MODEL_NAME = "gpt-3.5-turbo"
-# ファインチューニング後に、ファインチューニング済みモデルのIDを設定する
-# 例: "ft:gpt-3.5-turbo-0613:your-org:custom-model-name:xxxxxxx"
-FINETUNED_MODEL_ID = None
+# ファインチューニング済みモデルID
+# どちらか一方、または必要に応じて両方を設定・選択できるようにします
+# 例: FINETUNED_MODEL_ID = "ft:gpt-3.5-turbo-0125:personal:movieblog:Bc5U7J3S"
+FINETUNED_MODEL_ID = "ft:gpt-3.5-turbo-0125:personal:movieblog:BbjfLeuf" # またはもう一方のID
 
 # --- Generation Parameters (Defaults) ---
 # これらの値は、記事生成時に個別に上書き可能にする

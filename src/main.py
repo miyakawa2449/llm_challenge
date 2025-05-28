@@ -3,7 +3,8 @@ import json
 from datetime import datetime
 
 from src.generator.article_generator import ArticleGenerator
-from src.config import settings # APIキーやデフォルトモデル名などを読み込む
+from src.prompts.prompt_manager import PromptManager # 仮のPromptManager
+from src.config import settings # FINETUNED_MODEL_ID を直接使う場合
 
 def load_user_blog_style_example(file_path: str, num_chars: int = 1000) -> str:
     """
@@ -56,7 +57,7 @@ def save_generated_article(article_content: str, movie_title: str, output_dir: s
         print(f"エラー: 記事の保存中にエラーが発生しました: {file_path} ({e})")
 
 
-if __name__ == "__main__":
+def main():
     print("映画レビュー記事生成システムを開始します...")
 
     # --- 設定 ---
@@ -85,7 +86,8 @@ if __name__ == "__main__":
     custom_generation_params = {
         "temperature": 0.8,       # 少し創造性を高める
         "max_tokens": 2500,       # ブログ記事なので長めに
-        "model": settings.DEFAULT_MODEL_NAME # settingsからモデル名を指定 (例: "gpt-3.5-turbo")
+        # "model": settings.DEFAULT_MODEL_NAME # settingsからモデル名を指定 (例: "gpt-3.5-turbo")
+        "model": settings.FINETUNED_MODEL_ID # ファインチューニング済みモデルを使用
         # "model": "gpt-4o" # もしgpt-4oを使いたい場合 (APIアクセス権限と料金に注意)
         # "top_p": 0.9
     }
@@ -122,3 +124,6 @@ if __name__ == "__main__":
             print(f"エラー詳細: {generated_review}")
 
     print("\n映画レビュー記事生成システムを終了します。")
+
+if __name__ == "__main__":
+    main()

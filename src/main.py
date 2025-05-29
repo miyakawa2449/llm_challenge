@@ -84,8 +84,10 @@ def main():
     # 生成パラメータ (オプション)
     # これらを指定しない場合、settings.pyのデフォルト値やOpenAIAdapterのデフォルトが使われる
     custom_generation_params = {
-        "temperature": 0.8,       # 少し創造性を高める
+        "temperature": 0.5,       # 少し創造性を高める
         "max_tokens": 2500,       # ブログ記事なので長めに
+        "frequency_penalty": 0.5, # 繰り返しを抑える
+        "presence_penalty": 0,  # 新しいトピックを促す
         # "model": settings.DEFAULT_MODEL_NAME # settingsからモデル名を指定 (例: "gpt-3.5-turbo")
         "model": settings.FINETUNED_MODEL_ID # ファインチューニング済みモデルを使用
         # "model": "gpt-4o" # もしgpt-4oを使いたい場合 (APIアクセス権限と料金に注意)

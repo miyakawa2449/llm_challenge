@@ -12,7 +12,7 @@ DEFAULT_MODEL_NAME = "gpt-3.5-turbo"
 # ファインチューニング済みモデルID
 # どちらか一方、または必要に応じて両方を設定・選択できるようにします
 # 例: FINETUNED_MODEL_ID = "ft:gpt-3.5-turbo-0125:personal:movieblog:Bc5U7J3S"
-FINETUNED_MODEL_ID = "ft:gpt-3.5-turbo-0125:personal:movieblog:BbjfLeuf" # またはもう一方のID
+# FINETUNED_MODEL_ID = "ft:gpt-3.5-turbo-0125:personal:movieblog:Bd9j2iHa" # またはもう一方のID
 
 # --- Generation Parameters (Defaults) ---
 # これらの値は、記事生成時に個別に上書き可能にする

@@ -79,7 +79,18 @@ def main():
 
     # 生成したい映画のタイトル
     target_movie_title = "君の名は。"
-    # target_movie_title = "ブレードランナー 2049" # 他の映画で試す場合
+    # target_movie_title = " ヴァチカンのエクソシスト(2023年公開)" # 他の映画で試す場合
+
+    # 使用するモデルを決定
+    # FINETUNED_MODEL_ID が settings.py に定義されていて、かつ値が設定されていればそれを使用し、
+    # コメントアウトされているなどで未定義、または値が空の場合は DEFAULT_MODEL_NAME を使用
+    model_to_use = settings.DEFAULT_MODEL_NAME # デフォルトを設定
+    if hasattr(settings, 'FINETUNED_MODEL_ID') and settings.FINETUNED_MODEL_ID:
+        # FINETUNED_MODEL_ID が存在し、空文字列やNoneでないことを確認
+        model_to_use = settings.FINETUNED_MODEL_ID
+        print(f"情報: ファインチューニング済みモデルを使用します: {model_to_use}")
+    else:
+        print(f"情報: デフォルトモデルを使用します: {model_to_use}")
 
     # 生成パラメータ (オプション)
     # これらを指定しない場合、settings.pyのデフォルト値やOpenAIAdapterのデフォルトが使われる
@@ -88,9 +99,7 @@ def main():
         "max_tokens": 2500,       # ブログ記事なので長めに
         "frequency_penalty": 0.5, # 繰り返しを抑える
         "presence_penalty": 0,  # 新しいトピックを促す
-        # "model": settings.DEFAULT_MODEL_NAME # settingsからモデル名を指定 (例: "gpt-3.5-turbo")
-        "model": settings.FINETUNED_MODEL_ID # ファインチューニング済みモデルを使用
-        # "model": "gpt-4o" # もしgpt-4oを使いたい場合 (APIアクセス権限と料金に注意)
+        "model": model_to_use # 動的に決定されたモデルIDを使用
         # "top_p": 0.9
     }
 
